@@ -102,7 +102,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
        */
       //set the state with the initial location and zero velocity
       ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack
-          .raw_measurements_[1], 1, 1;
+          .raw_measurements_[1], 0, 0;
     }
 
     previous_timestamp_ = measurement_pack.timestamp_;
@@ -157,7 +157,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     // Radar updates
-    Tools tools;
     Hj_ = tools.CalculateJacobian(ekf_.x_);
     ekf_.H_ = Hj_;
     ekf_.R_ = R_radar_;
