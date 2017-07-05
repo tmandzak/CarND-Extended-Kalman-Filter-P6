@@ -54,13 +54,8 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   */
 
   float rho = sqrt(x_(0) * x_(0) + x_(1) * x_(1));
-  float phi = atan2(x_(1), x_(0));
-  float rhodot;
-  if (fabs(rho) < 0.0001) {
-    rhodot = 0;
-  } else {
-    rhodot = (x_(0) * x_(2) + x_(1) * x_(3)) / rho;
-  }
+  float phi = atan2(x_(1), x_(0));  //if x_(0) == 0 +-Pi/2 is returned: http://en.cppreference.com/w/cpp/numeric/math/atan2
+  float rhodot = (x_(0) * x_(2) + x_(1) * x_(3)) / rho; //rho can't be 0 in reality
 
   VectorXd z_pred(3);
   z_pred << rho, phi, rhodot;
@@ -72,7 +67,6 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   } else if (y(1)<-PI) {
     y[1] += 2*PI;
   }
-
 
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
